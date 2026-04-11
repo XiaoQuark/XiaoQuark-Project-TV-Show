@@ -5,10 +5,11 @@ function setup() {
 }
 
 function makePageForEpisodes(episodeList) {
+  const rootElem = document.getElementById("root");
   for (const episode of episodeList) {
     const card = createEpisodeCard(episode);
     console.log(card);
-    document.body.appendChild(card);
+    rootElem.appendChild(card);
   }
 }
 
