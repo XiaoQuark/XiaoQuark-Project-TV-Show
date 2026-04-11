@@ -14,7 +14,7 @@ function makePageForEpisodes(episodeList) {
 }
 
 function createEpisodeCard(episode) {
-  const card = document.getElementById("episode-card").content.cloneNode(true);
+  const card = document.getElementById("template").content.cloneNode(true);
 
   const image = card.querySelector("img");
   image.src = episode.image.medium;
