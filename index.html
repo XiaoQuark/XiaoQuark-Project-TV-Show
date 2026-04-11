@@ -1,32 +1,33 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>TV Show Project | Kris Oldrini (XiaoQuark)</title>
-		<link href="style.css" rel="stylesheet" />
-		<link rel="icon" href="/favicon.ico" type="image/x-icon" />
-	</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TV Show Project | Kris Oldrini (XiaoQuark)</title>
+    <link href="style.css" rel="stylesheet" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  </head>
 
-	<body>
-		<div id="root"></div>
-		<section id="episodes-grid">
-			<template id="episode-card">
-				<article>
-					<img src="" alt="" />
-					<h2>Episode Name</h2>
-					<p episode-code>Episode Code</p>
-					<p season-number>Season number</p>
-					<p episode-number>Episode Number</p>
-					<div summary>Summary</div>
-				</article>
-			</template>
-		</section>
+  <body>
+    <div id="root">
+      <section id="episodes-grid">
+        <template id="episode-card">
+          <article>
+            <img src="" alt="" />
+            <h2>Episode Name</h2>
+            <p episode-code>Episode Code</p>
+            <p season-number>Season number</p>
+            <p episode-number>Episode Number</p>
+            <div summary>Summary</div>
+          </article>
+        </template>
+      </section>
+    </div>
 
-		<!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
-		<script src="episodes.js"></script>
+    <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
+    <script src="episodes.js"></script>
 
-		<!-- Loads YOUR javascript code -->
-		<script src="script.js"></script>
-	</body>
+    <!-- Loads YOUR javascript code -->
+    <script src="script.js"></script>
+  </body>
 </html>
