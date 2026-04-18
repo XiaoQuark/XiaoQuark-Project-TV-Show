@@ -10,7 +10,7 @@
 
   <body>
     <div id="root">
-      <section id="episodes-grid">
+      <main id="episodes-grid">
         <template id="template">
           <article id="episode-card">
             <img src="" alt="" />
@@ -21,8 +21,15 @@
             <div summary id="summary">Summary</div>
           </article>
         </template>
-      </section>
+      </main>
     </div>
+
+    <footer>
+      <p>
+        Data originally provided by
+        <a href="https://www.tvmaze.com/" target="_blank">TVMaze.com</a>
+      </p>
+    </footer>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
     <script src="episodes.js"></script>
