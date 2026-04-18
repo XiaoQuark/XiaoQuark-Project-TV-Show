@@ -1,26 +1,46 @@
 //You can edit ALL of the code here
+const state = {
+  allEpisodes: [],
+  searchTerm: "",
+};
+
 function setup() {
-  const allEpisodes = getAllEpisodes();
-  makePageForEpisodes(allEpisodes);
+  state.allEpisodes = getAllEpisodes();
 
   const searchInput = document.getElementById("search-input");
-  const searchCount = document.getElementById("search-count");
 
-  searchCount.textContent = `Displaying ${allEpisodes.length}/${allEpisodes.length} episodes`;
+  searchInput.addEventListener("input", handleSearchInput);
 
-  searchInput.addEventListener("input", (event) => {
-    const searchTerm = event.target.value.toLowerCase();
+  render();
+}
 
-    const filteredEpisodes = allEpisodes.filter((episode) => {
-      return (
-        episode.name.toLowerCase().includes(searchTerm) ||
-        episode.summary.toLowerCase().includes(searchTerm)
-      );
-    });
+function handleSearchInput(event) {
+  state.searchTerm = event.target.value.toLowerCase();
+  render();
+}
 
-    makePageForEpisodes(filteredEpisodes);
-    searchCount.textContent = `Displaying ${filteredEpisodes.length}/${allEpisodes.length} episodes`;
+function render() {
+  const filteredEpisodes = state.allEpisodes.filter((episode) => {
+    return (
+      episode.name.toLowerCase().includes(state.searchTerm) ||
+      episode.summary.toLowerCase().includes(state.searchTerm)
+    );
   });
+
+  document.getElementById("search-count").textContent =
+    `Displaying ${filteredEpisodes.length}/${state.allEpisodes.length} episodes`;
+
+  makePageForEpisodes(filteredEpisodes);
+}
+
+function makePageForEpisodes(episodeList) {
+  const grid = document.getElementById("episodes-grid");
+  grid.innerHTML = "";
+
+  for (const episode of episodeList) {
+    const card = createEpisodeCard(episode);
+    grid.appendChild(card);
+  }
 }
 
 function makePageForEpisodes(episodeList) {
