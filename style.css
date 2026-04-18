@@ -48,3 +48,10 @@ h2 {
 #summary {
   margin-top: 20px;
 }
+
+#episodes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}

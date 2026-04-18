@@ -1,15 +1,54 @@
 //You can edit ALL of the code here
+const state = {
+  allEpisodes: [],
+  searchTerm: "",
+};
+
 function setup() {
-  const allEpisodes = getAllEpisodes();
-  makePageForEpisodes(allEpisodes);
+  state.allEpisodes = getAllEpisodes();
+
+  const searchInput = document.getElementById("search-input");
+
+  searchInput.addEventListener("input", handleSearchInput);
+
+  render();
+}
+
+function handleSearchInput(event) {
+  state.searchTerm = event.target.value.toLowerCase();
+  render();
+}
+
+function render() {
+  const filteredEpisodes = state.allEpisodes.filter((episode) => {
+    return (
+      episode.name.toLowerCase().includes(state.searchTerm) ||
+      episode.summary.toLowerCase().includes(state.searchTerm)
+    );
+  });
+
+  document.getElementById("search-count").textContent =
+    `Displaying ${filteredEpisodes.length}/${state.allEpisodes.length} episodes`;
+
+  makePageForEpisodes(filteredEpisodes);
 }
 
 function makePageForEpisodes(episodeList) {
-  const rootElem = document.getElementById("root");
+  const grid = document.getElementById("episodes-grid");
+  grid.innerHTML = "";
+
   for (const episode of episodeList) {
     const card = createEpisodeCard(episode);
-    console.log(card);
-    rootElem.appendChild(card);
+    grid.appendChild(card);
+  }
+}
+
+function makePageForEpisodes(episodeList) {
+  const grid = document.getElementById("episodes-grid");
+  grid.innerHTML = "";
+  for (const episode of episodeList) {
+    const card = createEpisodeCard(episode);
+    grid.appendChild(card);
   }
 }
 
