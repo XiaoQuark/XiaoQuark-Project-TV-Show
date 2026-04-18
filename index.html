@@ -10,26 +10,27 @@
 
   <body>
     <div id="root">
-      <div id="search-bar">
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Your search term..."
-        />
-        <span id="search-count"></span>
-      </div>
-      <section id="episodes-grid"></section>
+      <main id="episodes-grid">
+        <template id="template">
+          <article id="episode-card">
+            <img src="" alt="" />
+            <h2>Episode Name</h2>
+            <p episode-code id="code">Episode code</p>
+            <p season-number id="season">Season number</p>
+            <p episode-number id="episode-number">Episode Number</p>
+            <div summary id="summary">Summary</div>
+          </article>
+        </template>
+      </main>
     </div>
-    <template id="template">
-      <article id="episode-card">
-        <img src="" alt="" />
-        <h2>Episode Name</h2>
-        <p episode-code id="code">Episode code</p>
-        <p season-number id="season">Season number</p>
-        <p episode-number id="episode-number">Episode Number</p>
-        <div summary id="summary">Summary</div>
-      </article>
-    </template>
+
+    <footer>
+      <p>
+        Data originally provided by
+        <a href="https://www.tvmaze.com/" target="_blank">TVMaze.com</a>
+      </p>
+    </footer>
+
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
     <script src="episodes.js"></script>
 
