@@ -2,13 +2,22 @@
 const state = {
   allEpisodes: [],
   searchTerm: "",
+  selectedEpisodeId: "all",
 };
 
 function setup() {
   state.allEpisodes = getAllEpisodes();
 
   const searchInput = document.getElementById("search-input");
-
+  const selector = document.getElementById("episode-selector");
+  for (const episode of state.allEpisodes) {
+    const option = document.createElement("option");
+    option.value = episode.id;
+    const episodeCode = createEpisodeCode(episode.season, episode.number);
+    option.textContent = `${episodeCode} - ${episode.name}`;
+    selector.appendChild(option);
+  }
+  selector.addEventListener("change", handleSelectChange);
   searchInput.addEventListener("input", handleSearchInput);
 
   render();
@@ -19,12 +28,20 @@ function handleSearchInput(event) {
   render();
 }
 
+function handleSelectChange(event) {
+  state.selectedEpisodeId = event.target.value;
+  render();
+}
+
 function render() {
   const filteredEpisodes = state.allEpisodes.filter((episode) => {
-    return (
+    const matchesSelector =
+      state.selectedEpisodeId === "all" ||
+      String(episode.id) === state.selectedEpisodeId;
+    const matchesSearch =
       episode.name.toLowerCase().includes(state.searchTerm) ||
-      episode.summary.toLowerCase().includes(state.searchTerm)
-    );
+      episode.summary.toLowerCase().includes(state.searchTerm);
+    return matchesSelector && matchesSearch;
   });
 
   document.getElementById("search-count").textContent =
