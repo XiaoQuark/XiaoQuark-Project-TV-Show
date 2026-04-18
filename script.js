@@ -2,14 +2,33 @@
 function setup() {
   const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
+
+  const searchInput = document.getElementById("search-input");
+  const searchCount = document.getElementById("search-count");
+
+  searchCount.textContent = `Displaying ${allEpisodes.length}/${allEpisodes.length} episodes`;
+
+  searchInput.addEventListener("input", (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+
+    const filteredEpisodes = allEpisodes.filter((episode) => {
+      return (
+        episode.name.toLowerCase().includes(searchTerm) ||
+        episode.summary.toLowerCase().includes(searchTerm)
+      );
+    });
+
+    makePageForEpisodes(filteredEpisodes);
+    searchCount.textContent = `Displaying ${filteredEpisodes.length}/${allEpisodes.length} episodes`;
+  });
 }
 
 function makePageForEpisodes(episodeList) {
-  const rootElem = document.getElementById("root");
+  const grid = document.getElementById("episodes-grid");
+  grid.innerHTML = "";
   for (const episode of episodeList) {
     const card = createEpisodeCard(episode);
-    console.log(card);
-    rootElem.appendChild(card);
+    grid.appendChild(card);
   }
 }
 
