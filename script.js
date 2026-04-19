@@ -9,7 +9,16 @@ function setup() {
   state.allEpisodes = getAllEpisodes();
 
   const searchInput = document.getElementById("search-input");
-  const selector = document.getElementById("episode-selector");
+
+  populateSelector(selector);
+
+  selector.addEventListener("change", handleSelectChange);
+  searchInput.addEventListener("input", handleSearchInput);
+
+  render();
+}
+
+function populateSelector(selector) {
   for (const episode of state.allEpisodes) {
     const option = document.createElement("option");
     option.value = episode.id;
@@ -17,10 +26,6 @@ function setup() {
     option.textContent = `${episodeCode} - ${episode.name}`;
     selector.appendChild(option);
   }
-  selector.addEventListener("change", handleSelectChange);
-  searchInput.addEventListener("input", handleSearchInput);
-
-  render();
 }
 
 function handleSearchInput(event) {
