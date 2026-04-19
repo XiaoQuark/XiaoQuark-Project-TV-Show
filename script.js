@@ -1,22 +1,23 @@
 //You can edit ALL of the code here
 // On load function. Retrieves episodes, access search bar and dropdown and launches render
 function setup() {
-	state.allEpisodes = getAllEpisodes();
-
 	const controlsForm = document.getElementById("controls");
 	const dropdownSelect = document.getElementById("episode-select");
 	const searchInput = document.getElementById("search-input");
 	const clearButton = document.getElementById("clear-search");
 
 	searchInput.value = "";
-	populateDropdown(dropdownSelect);
 
 	dropdownSelect.addEventListener("change", handleSelectChange);
 	searchInput.addEventListener("input", handleSearchInput);
 	controlsForm.addEventListener("submit", handleFormSubmit);
 	clearButton.addEventListener("click", handleClearSearch);
 
-	render();
+	fetchEpisodes().then((episodes) => {
+		state.allEpisodes = episodes;
+		populateDropdown(dropdownSelect);
+		render();
+	});
 }
 
 // state
@@ -26,6 +27,12 @@ const state = {
 	// keeping this state for now because I might decide to change the dropdown behaviour back to filtering, not scrolling
 	selectedEpisodeId: "all",
 };
+
+const endpoint = "https://api.tvmaze.com/shows/82/episodes";
+
+function fetchEpisodes() {
+	return fetch(endpoint).then((response) => response.json());
+}
 
 // event handlers
 function handleFormSubmit(event) {
