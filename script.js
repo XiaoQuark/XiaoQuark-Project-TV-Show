@@ -13,11 +13,21 @@ function setup() {
 	controlsForm.addEventListener("submit", handleFormSubmit);
 	clearButton.addEventListener("click", handleClearSearch);
 
-	fetchEpisodes().then((episodes) => {
-		state.allEpisodes = episodes;
-		populateDropdown(dropdownSelect);
-		render();
-	});
+	render();
+
+	fetchEpisodes()
+		.then((episodes) => {
+			state.allEpisodes = episodes;
+			state.isLoading = false;
+			populateDropdown(dropdownSelect);
+			render();
+		})
+		.catch(() => {
+			state.isLoading = false;
+			state.errorMessage =
+				"There was an error in retrieving the episodes. Please try again";
+			render();
+		});
 }
 
 // state
@@ -26,12 +36,19 @@ const state = {
 	searchTerm: "",
 	// keeping this state for now because I might decide to change the dropdown behaviour back to filtering, not scrolling
 	selectedEpisodeId: "all",
+	isLoading: true,
+	errorMessage: "",
 };
 
 const endpoint = "https://api.tvmaze.com/shows/82/episodes";
 
 function fetchEpisodes() {
-	return fetch(endpoint).then((response) => response.json());
+	return fetch(endpoint).then((response) => {
+		if (!response.ok) {
+			throw new Error("Failed to fetch episodes");
+		}
+		return response.json();
+	});
 }
 
 // event handlers
@@ -71,7 +88,6 @@ function populateDropdown(dropdownSelect) {
 	for (const episode of state.allEpisodes) {
 		const option = document.createElement("option");
 		option.value = episode.id;
-		// const episodeCode = createEpisodeCode(episode.season, episode.number);
 		option.textContent = `${createEpisodeCode(episode.season, episode.number)} - ${episode.name}`;
 		dropdownSelect.appendChild(option);
 	}
@@ -80,6 +96,25 @@ function populateDropdown(dropdownSelect) {
 // render: filters episodes based on search input and renders them as cards
 function render() {
 	const episodeCount = document.getElementById("episode-count");
+	const grid = document.getElementById("episodes-grid");
+	const statusMessage = document.createElement("p");
+	statusMessage.id = "status-message";
+
+	grid.textContent = "";
+	episodeCount.textContent = "";
+
+	if (state.isLoading) {
+		statusMessage.textContent = "Loading episodes...";
+		grid.appendChild(statusMessage);
+		return;
+	}
+
+	if (state.errorMessage) {
+		statusMessage.textContent = state.errorMessage;
+		grid.appendChild(statusMessage);
+		return;
+	}
+
 	const filteredEpisodes = state.allEpisodes.filter(
 		(episode) =>
 			episode.name.toLowerCase().includes(state.searchTerm) ||
@@ -96,13 +131,6 @@ function makePageForEpisodes(episodeList) {
 	const grid = document.getElementById("episodes-grid");
 	// must remove old cards before rendering new ones, or they will just keep getting added to the existing ones
 	grid.textContent = "";
-
-	// map list of episodes to create cards
-	// const episodeCards = episodeList.map((episode) =>
-	// 	createEpisodeCard(episode),
-	// );
-
-	// grid.append(...episodeCards);
 
 	for (const episode of episodeList) {
 		const card = createEpisodeCard(episode);
