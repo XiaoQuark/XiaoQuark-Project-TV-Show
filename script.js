@@ -50,10 +50,13 @@ const state = {
 	episodesCache: {},
 };
 
+// const showsURL = "https://api.tvmaze.com/shows"
+// const episodesURL = `${showsURL}/${state.selectedShowId}/episodes`
+
 function fetchShows() {
 	return fetch("https://api.tvmaze.com/shows").then((response) => {
 		if (!response.ok) {
-			throw new Error("Failed to fetch episodes");
+			throw new Error("Failed to fetch shows");
 		}
 		return response.json();
 	});
@@ -197,8 +200,6 @@ function render() {
 // draws episodes section
 function makePageForEpisodes(episodeList) {
 	const grid = document.getElementById("episodes-grid");
-	// must remove old cards before rendering new ones, or they will just keep getting added to the existing ones
-	grid.textContent = "";
 	for (const episode of episodeList) {
 		const card = createEpisodeCard(episode);
 		grid.appendChild(card);
