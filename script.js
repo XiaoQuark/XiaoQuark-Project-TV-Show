@@ -207,30 +207,38 @@ function makePageForEpisodes(episodeList) {
 
 // draws episode cards
 function createEpisodeCard(episode) {
-	// get template
 	const template = document
 		.getElementById("template")
 		.content.cloneNode(true);
 	const card = template.querySelector("article");
 	card.id = episode.id;
 
-	// image
-	const image = template.querySelector("img");
-	image.src = episode.image ? episode.image.medium : "";
-	image.alt = `Screenshot from episode ${episode.name}`;
+	// image: only render it if a medium image exists
+	if (episode.image?.medium) {
+		const image = template.querySelector("img");
+		image.src = episode.image.medium;
+		image.alt = `Screenshot from episode ${episode.name}`;
+	} else {
+		template.querySelector("img").remove();
+	}
 
-	// episode title
+	// title
 	template.querySelector("h2").textContent = episode.name;
+
+	// code
 	template.querySelector("[episode-code]").textContent = createEpisodeCode(
 		episode.season,
 		episode.number,
 	);
-	// other info
+
 	template.querySelector("[season-number]").textContent =
 		`Season number: ${episode.season}`;
 	template.querySelector("[episode-number]").textContent =
 		`Episode number: ${episode.number}`;
-	template.querySelector("[summary]").innerHTML = episode.summary || "";
+
+	// summary
+	template.querySelector("[summary]").innerHTML =
+		episode.summary || "<p>No summary available</p>";
 
 	return template;
 }
