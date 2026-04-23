@@ -119,6 +119,7 @@ function handleShowSelectChange(event) {
 
 	if (!showId) {
 		state.allEpisodes = [];
+		state.currentView = "shows";
 		render();
 		return;
 	}
