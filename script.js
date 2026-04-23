@@ -50,11 +50,11 @@ const state = {
 	episodesCache: {},
 };
 
-// const showsURL = "https://api.tvmaze.com/shows"
-// const episodesURL = `${showsURL}/${state.selectedShowId}/episodes`
+const BASE_URL = "https://api.tvmaze.com";
+const SHOWS_URL = `${BASE_URL}/shows`;
 
 function fetchShows() {
-	return fetch("https://api.tvmaze.com/shows").then((response) => {
+	return fetch(SHOWS_URL).then((response) => {
 		if (!response.ok) {
 			throw new Error("Failed to fetch shows");
 		}
@@ -66,15 +66,13 @@ function fetchEpisodes(showId) {
 	if (state.episodesCache[showId]) {
 		return Promise.resolve(state.episodesCache[showId]);
 	}
-	return fetch(`https://api.tvmaze.com/shows/${showId}/episodes`).then(
-		(response) => {
-			if (!response.ok) throw new Error("Failed to fetch episodes");
-			return response.json().then((data) => {
-				state.episodesCache[showId] = data;
-				return data;
-			});
-		},
-	);
+	return fetch(`${SHOWS_URL}/${showId}/episodes`).then((response) => {
+		if (!response.ok) throw new Error("Failed to fetch episodes");
+		return response.json().then((data) => {
+			state.episodesCache[showId] = data;
+			return data;
+		});
+	});
 }
 // event handlers
 function handleFormSubmit(event) {
