@@ -1,30 +1,30 @@
 //You can edit ALL of the code here
 // On load function. Retrieves episodes, access search bar and dropdown and launches render
 function setup() {
-	const controlsForm = document.getElementById("controls");
-	const episodeSelect = document.getElementById("episode-select");
-	const showSelect = document.getElementById("show-select");
-	const searchInput = document.getElementById("search-input");
-	const clearButton = document.getElementById("clear-search");
+	elements.controlsForm = document.getElementById("controls");
+	elements.showSelect = document.getElementById("show-select");
+	elements.episodeSelect = document.getElementById("episode-select");
+	elements.searchInput = document.getElementById("search-input");
+	elements.clearButton = document.getElementById("clear-search");
+	elements.episodeCount = document.getElementById("episode-count");
+	elements.grid = document.getElementById("episodes-grid");
 
-	searchInput.value = "";
+	elements.searchInput.value = "";
 
-	showSelect.addEventListener("change", handleShowSelectChange);
-	episodeSelect.addEventListener("change", handleSelectChange);
-	searchInput.addEventListener("input", handleSearchInput);
-	controlsForm.addEventListener("submit", handleFormSubmit);
-	clearButton.addEventListener("click", handleClearSearch);
+	elements.showSelect.addEventListener("change", handleShowSelectChange);
+	elements.episodeSelect.addEventListener("change", handleSelectChange);
+	elements.searchInput.addEventListener("input", handleSearchInput);
+	elements.controlsForm.addEventListener("submit", handleFormSubmit);
+	elements.clearButton.addEventListener("click", handleClearSearch);
+	elements.template = document.getElementById("template");
 
-	// this render is to display the loading state. Is there a way to avoid calling render?
-	// maybe I could just inject the loading state here?
 	render();
 
 	fetchShows()
 		.then((shows) => {
-			// store in showsCache
 			state.allShows = shows;
 			state.isLoading = false;
-			populateShowDropdown(showSelect);
+			populateShowDropdown(elements.showSelect);
 			render();
 		})
 		.catch(() => {
@@ -48,6 +48,18 @@ const state = {
 	isLoading: true,
 	errorMessage: "",
 	episodesCache: {},
+};
+
+// DOM elements
+const elements = {
+	controlsForm: null,
+	showSelect: null,
+	episodeSelect: null,
+	searchInput: null,
+	clearButton: null,
+	episodeCount: null,
+	grid: null,
+	template: null,
 };
 
 const BASE_URL = "https://api.tvmaze.com";
@@ -81,7 +93,7 @@ function handleFormSubmit(event) {
 
 function handleClearSearch() {
 	state.searchTerm = "";
-	document.getElementById("search-input").value = "";
+	elements.searchInput.value = "";
 	render();
 }
 
@@ -92,12 +104,12 @@ function handleSearchInput(event) {
 
 function handleShowSelectChange(event) {
 	const showId = event.target.value;
-	const episodeSelect = document.getElementById("episode-select");
+	const episodeSelect = elements.episodeSelect;
 
 	state.selectedShowId = showId;
 	state.selectedEpisodeId = "all";
 	state.searchTerm = "";
-	document.getElementById("search-input").value = "";
+	elements.searchInput.value = "";
 
 	episodeSelect.innerHTML = '<option value="all">Select Episode</option>';
 
@@ -163,8 +175,8 @@ function populateDropdown(dropdownSelect) {
 
 // render: filters episodes based on search input and renders them as cards
 function render() {
-	const episodeCount = document.getElementById("episode-count");
-	const grid = document.getElementById("episodes-grid");
+	const episodeCount = elements.episodeCount;
+	const grid = elements.grid;
 	const statusMessage = document.createElement("p");
 	statusMessage.id = "status-message";
 
@@ -198,7 +210,7 @@ function render() {
 
 // draws episodes section
 function makePageForEpisodes(episodeList) {
-	const grid = document.getElementById("episodes-grid");
+	const grid = elements.grid;
 	for (const episode of episodeList) {
 		const card = createEpisodeCard(episode);
 		grid.appendChild(card);
@@ -207,9 +219,7 @@ function makePageForEpisodes(episodeList) {
 
 // draws episode cards
 function createEpisodeCard(episode) {
-	const template = document
-		.getElementById("template")
-		.content.cloneNode(true);
+	const template = elements.template.content.cloneNode(true);
 	const card = template.querySelector("article");
 	card.id = episode.id;
 
