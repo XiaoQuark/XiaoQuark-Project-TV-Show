@@ -43,7 +43,7 @@ const state = {
 	allEpisodes: [],
 	searchTerm: "",
 	// keeping this state for now because I might decide to change the dropdown behaviour back to filtering, not scrolling
-	// selectedEpisodeId: "all",
+	selectedEpisodeId: "all",
 	selectedShowId: "",
 	isLoading: true,
 	errorMessage: "",
@@ -127,7 +127,7 @@ function handleShowSelectChange(event) {
 		.then((episodes) => {
 			state.allEpisodes = episodes;
 			state.isLoading = false;
-			populateDropdown(episodeSelect);
+			populateEpisodesDropdown(episodeSelect);
 			render();
 		})
 		.catch(() => {
@@ -139,13 +139,18 @@ function handleShowSelectChange(event) {
 }
 
 function handleSelectChange(event) {
-	state.selectedEpisodeId = event.target.value;
-	if (state.selectedEpisodeId === "all") return;
+	const selectedEpisodeId = event.target.value;
+	state.selectedEpisodeId = selectedEpisodeId;
+
+	if (selectedEpisodeId === "all") return;
+
 	state.searchTerm = "";
-	document.getElementById("search-input").value = "";
+	elements.searchInput.value = "";
+
 	render();
 
-	const selectedEpisode = document.getElementById(state.selectedEpisodeId);
+	const selectedEpisode = document.getElementById(selectedEpisodeId);
+
 	if (selectedEpisode) {
 		selectedEpisode.scrollIntoView({ behavior: "smooth", block: "start" });
 	}
@@ -163,7 +168,7 @@ function populateShowDropdown(showSelect) {
 	}
 }
 
-function populateDropdown(dropdownSelect) {
+function populateEpisodesDropdown(dropdownSelect) {
 	dropdownSelect.innerHTML = '<option value="all">Select Episode</option>';
 	for (const episode of state.allEpisodes) {
 		const option = document.createElement("option");
