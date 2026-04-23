@@ -8,6 +8,7 @@ function setup() {
 	elements.clearButton = document.getElementById("clear-search");
 	elements.episodeCount = document.getElementById("episode-count");
 	elements.grid = document.getElementById("episodes-grid");
+	elements.backToShowsButton = document.getElementById("back-to-shows");
 
 	elements.searchInput.value = "";
 
@@ -18,6 +19,7 @@ function setup() {
 	elements.clearButton.addEventListener("click", handleClearSearch);
 	elements.episodeTemplate = document.getElementById("episode-template");
 	elements.showTemplate = document.getElementById("show-template");
+	elements.backToShowsButton.addEventListener("click", handleBackToShows);
 
 	render();
 
@@ -52,7 +54,7 @@ const state = {
 	currentView: "shows",
 };
 
-// DOM elements
+// global DOM elements
 const elements = {
 	controlsForm: null,
 	showSelect: null,
@@ -63,6 +65,7 @@ const elements = {
 	grid: null,
 	episodeTemplate: null,
 	showTemplate: null,
+	backToShowsButton: null,
 };
 
 const BASE_URL = "https://api.tvmaze.com";
@@ -143,6 +146,21 @@ function handleShowSelectChange(event) {
 		});
 }
 
+function handleBackToShows() {
+	state.currentView = "shows";
+	state.selectedShowId = "";
+	state.selectedEpisodeId = "all";
+	state.searchTerm = "";
+	state.allEpisodes = [];
+
+	elements.searchInput.value = "";
+	elements.showSelect.value = "";
+	elements.episodeSelect.innerHTML =
+		'<option value="all">Select Episode</option>';
+
+	render();
+}
+
 function handleSelectChange(event) {
 	const selectedEpisodeId = event.target.value;
 	state.selectedEpisodeId = selectedEpisodeId;
@@ -192,6 +210,8 @@ function render() {
 
 	grid.textContent = "";
 	episodeCount.textContent = "";
+
+	elements.backToShowsButton.hidden = state.currentView !== "episodes";
 
 	if (state.isLoading) {
 		statusMessage.textContent = "Loading...";
