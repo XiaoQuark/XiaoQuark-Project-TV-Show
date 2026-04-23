@@ -30,7 +30,7 @@
 				</button>
 				<!-- use form for both accessibility and grouping select and search input, as well as episode count -->
 				<section class="controls-container">
-					<form id="controls">
+					<form id="episode-controls" hidden>
 						<label for="episode-select">Jump to Episode</label>
 						<select id="episode-select">
 							<option value="all">Select Episode</option>
@@ -54,7 +54,7 @@
 							</button>
 						</div>
 					</form>
-					<p id="episode-count" aria-live="polite"></p>
+					<p id="episode-count" aria-live="polite" hidden></p>
 				</section>
 				<section id="episodes-grid"></section>
 				<template id="episode-template">

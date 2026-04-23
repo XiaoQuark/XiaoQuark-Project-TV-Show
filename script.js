@@ -1,7 +1,7 @@
 //You can edit ALL of the code here
 // On load function. Retrieves episodes, access search bar and dropdown and launches render
 function setup() {
-	elements.controlsForm = document.getElementById("controls");
+	elements.episodeControls = document.getElementById("episode-controls");
 	elements.showSelect = document.getElementById("show-select");
 	elements.episodeSelect = document.getElementById("episode-select");
 	elements.showSearchInput = document.getElementById("show-search-input");
@@ -29,7 +29,7 @@ function setup() {
 		"click",
 		handleClearEpisodeSearch,
 	);
-	elements.controlsForm.addEventListener("submit", handleFormSubmit);
+	elements.episodeControls.addEventListener("submit", handleFormSubmit);
 
 	elements.episodeTemplate = document.getElementById("episode-template");
 	elements.showTemplate = document.getElementById("show-template");
@@ -71,7 +71,7 @@ const state = {
 
 // global DOM elements
 const elements = {
-	controlsForm: null,
+	episodeControls: null,
 	showSelect: null,
 	episodeSelect: null,
 
@@ -238,6 +238,8 @@ function render() {
 	grid.textContent = "";
 	episodeCount.textContent = "";
 
+	elements.episodeControls.hidden = state.currentView !== "episodes";
+	elements.episodeCount.hidden = state.currentView !== "episodes";
 	elements.backToShowsButton.hidden = state.currentView !== "episodes";
 
 	if (state.isLoading) {
