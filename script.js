@@ -49,6 +49,7 @@ const state = {
 	isLoading: true,
 	errorMessage: "",
 	episodesCache: {},
+	currentView: "shows",
 };
 
 // DOM elements
@@ -109,6 +110,7 @@ function handleShowSelectChange(event) {
 	const episodeSelect = elements.episodeSelect;
 
 	state.selectedShowId = showId;
+	state.currentView = "episodes";
 	state.selectedEpisodeId = "all";
 	state.searchTerm = "";
 	elements.searchInput.value = "";
@@ -202,9 +204,21 @@ function render() {
 		return;
 	}
 
-	if (state.allEpisodes.length === 0) {
+	if (state.currentView === "shows") {
 		makePageForShows(state.allShows);
 		return;
+	}
+
+	if (state.currentView === "episodes") {
+		const filteredEpisodes = state.allEpisodes.filter(
+			(episode) =>
+				episode.name.toLowerCase().includes(state.searchTerm) ||
+				(episode.summary &&
+					episode.summary.toLowerCase().includes(state.searchTerm)),
+		);
+
+		episodeCount.textContent = `Displaying ${filteredEpisodes.length} / ${state.allEpisodes.length} episodes`;
+		makePageForEpisodes(filteredEpisodes);
 	}
 
 	const filteredEpisodes = state.allEpisodes.filter(
@@ -304,7 +318,6 @@ function createShowCard(show) {
 }
 
 function handleShowCardClick(showId) {
-	// simulate dropdown behaviour
 	state.selectedShowId = showId;
 	state.selectedEpisodeId = "all";
 	state.searchTerm = "";
@@ -315,6 +328,7 @@ function handleShowCardClick(showId) {
 
 	state.isLoading = true;
 	state.errorMessage = "";
+	state.currentView = "episodes";
 	render();
 
 	fetchEpisodes(showId)
