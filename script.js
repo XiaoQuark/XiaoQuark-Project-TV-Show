@@ -194,8 +194,8 @@ function handleSelectChange(event) {
 
 	if (selectedEpisodeId === "all") return;
 
-	state.searchTerm = "";
-	elements.searchInput.value = "";
+	state.episodeSearchTerm = "";
+	elements.episodeSearchInput.value = "";
 
 	render();
 
@@ -260,26 +260,17 @@ function render() {
 	if (state.currentView === "episodes") {
 		const filteredEpisodes = state.allEpisodes.filter(
 			(episode) =>
-				episode.name.toLowerCase().includes(state.searchTerm) ||
+				episode.name.toLowerCase().includes(state.episodeSearchTerm) ||
 				(episode.summary &&
-					episode.summary.toLowerCase().includes(state.searchTerm)),
+					episode.summary
+						.toLowerCase()
+						.includes(state.episodeSearchTerm)),
 		);
 
 		episodeCount.textContent = `Displaying ${filteredEpisodes.length} / ${state.allEpisodes.length} episodes`;
 		makePageForEpisodes(filteredEpisodes);
+		return;
 	}
-
-	const filteredEpisodes = state.allEpisodes.filter(
-		(episode) =>
-			episode.name.toLowerCase().includes(state.episodeSearchTerm) ||
-			(episode.summary &&
-				episode.summary
-					.toLowerCase()
-					.includes(state.episodeSearchTerm)),
-	);
-
-	episodeCount.textContent = `Displaying ${filteredEpisodes.length} / ${state.allEpisodes.length} episodes`;
-	makePageForEpisodes(filteredEpisodes);
 }
 
 // draw show section
@@ -382,6 +373,7 @@ function createShowCard(show) {
 
 function handleShowCardClick(showId) {
 	state.selectedShowId = showId;
+	elements.showSelect.value = String(showId);
 	state.selectedEpisodeId = "all";
 	state.episodeSearchTerm = "";
 	elements.episodeSearchInput.value = "";
