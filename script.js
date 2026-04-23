@@ -16,7 +16,8 @@ function setup() {
 	elements.searchInput.addEventListener("input", handleSearchInput);
 	elements.controlsForm.addEventListener("submit", handleFormSubmit);
 	elements.clearButton.addEventListener("click", handleClearSearch);
-	elements.template = document.getElementById("template");
+	elements.episodeTemplate = document.getElementById("episode-template");
+	elements.showTemplate = document.getElementById("show-template");
 
 	render();
 
@@ -59,7 +60,8 @@ const elements = {
 	clearButton: null,
 	episodeCount: null,
 	grid: null,
-	template: null,
+	episodeTemplate: null,
+	showTemplate: null,
 };
 
 const BASE_URL = "https://api.tvmaze.com";
@@ -200,7 +202,10 @@ function render() {
 		return;
 	}
 
-	if (state.allEpisodes.length === 0) return;
+	if (state.allEpisodes.length === 0) {
+		makePageForShows(state.allShows);
+		return;
+	}
 
 	const filteredEpisodes = state.allEpisodes.filter(
 		(episode) =>
@@ -211,6 +216,15 @@ function render() {
 
 	episodeCount.textContent = `Displaying ${filteredEpisodes.length} / ${state.allEpisodes.length} episodes`;
 	makePageForEpisodes(filteredEpisodes);
+}
+
+// draw show section
+function makePageForShows(showList) {
+	const grid = elements.grid;
+	for (const show of showList) {
+		const card = createShowCard(show);
+		grid.appendChild(card);
+	}
 }
 
 // draws episodes section
@@ -224,7 +238,7 @@ function makePageForEpisodes(episodeList) {
 
 // draws episode cards
 function createEpisodeCard(episode) {
-	const template = elements.template.content.cloneNode(true);
+	const template = elements.episodeTemplate.content.cloneNode(true);
 	const card = template.querySelector("article");
 	card.id = episode.id;
 
@@ -254,6 +268,33 @@ function createEpisodeCard(episode) {
 	// summary
 	template.querySelector("[summary]").innerHTML =
 		episode.summary || "<p>No summary available</p>";
+
+	return template;
+}
+
+// draw show card
+function createShowCard(show) {
+	const template = elements.showTemplate.content.cloneNode(true);
+
+	if (show.image?.medium) {
+		const image = template.querySelector("img");
+		image.src = show.image.medium;
+		image.alt = `Poster for ${show.name}`;
+	} else {
+		template.querySelector("img").remove();
+	}
+
+	template.querySelector("h2").textContent = show.name;
+	template.querySelector(".show-summary").innerHTML =
+		show.summary || "<p>No summary available</p>";
+	template.querySelector(".show-genres").textContent =
+		`Genres: ${show.genres.join(", ") || "Unknown"}`;
+	template.querySelector(".show-status").textContent =
+		`Status: ${show.status || "Unknown"}`;
+	template.querySelector(".show-rating").textContent =
+		`Rating: ${show.rating?.average ?? "N/A"}`;
+	template.querySelector(".show-runtime").textContent =
+		`Runtime: ${show.runtime ?? "N/A"} minutes`;
 
 	return template;
 }
