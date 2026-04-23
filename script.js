@@ -296,7 +296,40 @@ function createShowCard(show) {
 	template.querySelector(".show-runtime").textContent =
 		`Runtime: ${show.runtime ?? "N/A"} minutes`;
 
+	template.querySelector("article").addEventListener("click", () => {
+		handleShowCardClick(show.id);
+	});
+
 	return template;
+}
+
+function handleShowCardClick(showId) {
+	// simulate dropdown behaviour
+	state.selectedShowId = showId;
+	state.selectedEpisodeId = "all";
+	state.searchTerm = "";
+	elements.searchInput.value = "";
+
+	elements.episodeSelect.innerHTML =
+		'<option value="all">Select Episode</option>';
+
+	state.isLoading = true;
+	state.errorMessage = "";
+	render();
+
+	fetchEpisodes(showId)
+		.then((episodes) => {
+			state.allEpisodes = episodes;
+			state.isLoading = false;
+			populateEpisodesDropdown(elements.episodeSelect);
+			render();
+		})
+		.catch(() => {
+			state.isLoading = false;
+			state.errorMessage =
+				"There was an error in retrieving the episodes. Please try again";
+			render();
+		});
 }
 
 // creates episode code
