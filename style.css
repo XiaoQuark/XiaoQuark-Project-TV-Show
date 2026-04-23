@@ -14,6 +14,35 @@
 	max-width: 100vw;
 }
 
+.app-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: white;
+	padding: 10px 20px;
+	z-index: 1000;
+	border-bottom: 1px solid black;
+}
+
+main {
+	padding-top: 70px; /* header + controls */
+	padding-bottom: 60px; /* footer */
+	width: 100%;
+}
+
+footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	background: white;
+	padding: 10px 20px;
+	border-top: 1px solid black;
+	z-index: 1000;
+	text-align: center;
+}
+
 article {
 	display: flex;
 	flex-direction: column;
