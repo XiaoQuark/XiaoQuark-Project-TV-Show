@@ -94,16 +94,18 @@ function handleSearchInput(event) {
 
 function handleShowSelectChange(event) {
 	const showId = event.target.value;
+	const episodeSelect = document.getElementById("episode-select");
+
 	state.selectedShowId = showId;
 	state.selectedEpisodeId = "all";
 	state.searchTerm = "";
-	// do we need this? and if so, should we also refresh episode select?
 	document.getElementById("search-input").value = "";
+
+	episodeSelect.innerHTML = '<option value="all">Select Episode</option>';
 
 	if (!showId) {
 		state.allEpisodes = [];
 		render();
-		// do we need this return?
 		return;
 	}
 
@@ -115,7 +117,6 @@ function handleShowSelectChange(event) {
 		.then((episodes) => {
 			state.allEpisodes = episodes;
 			state.isLoading = false;
-			const episodeSelect = document.getElementById("episode-select");
 			populateDropdown(episodeSelect);
 			render();
 		})
