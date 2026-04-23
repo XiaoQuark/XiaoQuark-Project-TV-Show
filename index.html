@@ -10,15 +10,17 @@
 
 	<body>
 		<div id="root">
+			<header class="app-header">
+				<label for="show-select">Choose a show</label>
+				<select id="show-select">
+					<option value="">Select a show...</option>
+				</select>
+			</header>
 			<!-- main container for accessibility -->
 			<main id="main">
 				<!-- use form for both accessibility and grouping select and search input, as well as episode count -->
 				<section class="controls-container">
 					<form id="controls">
-						<label for="show-select">Select a Show</label>
-						<select id="show-select">
-							<option value="">Select a show...</option>
-						</select>
 						<label for="episode-select">Jump to Episode</label>
 						<select id="episode-select">
 							<option value="all">Select Episode</option>
