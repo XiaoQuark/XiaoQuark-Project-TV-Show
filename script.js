@@ -47,7 +47,7 @@ function setup() {
 		.catch(() => {
 			state.isLoading = false;
 			state.errorMessage =
-				"There was an error in retrieving the episodes. Please try again";
+				"There was an error in retrieving the shows. Please try again";
 			render();
 		});
 }
@@ -354,7 +354,6 @@ function createShowCard(show) {
 		template.querySelector("img").remove();
 	}
 
-	template.querySelector("h2").textContent = show.name;
 	template.querySelector(".show-summary").innerHTML =
 		show.summary || "<p>No summary available</p>";
 	template.querySelector(".show-genres").textContent =
@@ -366,7 +365,10 @@ function createShowCard(show) {
 	template.querySelector(".show-runtime").textContent =
 		`Runtime: ${show.runtime ?? "N/A"} minutes`;
 
-	template.querySelector("article").addEventListener("click", () => {
+	const title = template.querySelector("h2");
+	title.textContent = show.name;
+	title.style.cursor = "pointer";
+	title.addEventListener("click", () => {
 		handleShowCardClick(show.id);
 	});
 
