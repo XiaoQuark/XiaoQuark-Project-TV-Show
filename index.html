@@ -11,10 +11,17 @@
 	<body>
 		<div id="root">
 			<header class="app-header">
-				<label for="show-select">Choose a show</label>
+				<label for="show-select">Select a Show</label>
 				<select id="show-select">
 					<option value="">Select a show...</option>
 				</select>
+
+				<label for="show-search-input">Search shows</label>
+				<input
+					type="search"
+					id="show-search-input"
+					placeholder="Search shows..."
+				/>
 			</header>
 			<!-- main container for accessibility -->
 			<main id="main">
@@ -28,20 +35,22 @@
 						<select id="episode-select">
 							<option value="all">Select Episode</option>
 						</select>
-						<label for="search-input">Search episodes</label>
+						<label for="episode-search-input"
+							>Search episodes</label
+						>
 						<div class="search-wrapper">
 							<input
 								type="search"
-								id="search-input"
+								id="episode-search-input"
 								placeholder="Search episodes..."
 							/>
 							<button type="submit">Search</button>
 							<button
 								type="button"
-								id="clear-search"
-								aria-label="Clear search input"
+								id="clear-episode-search"
+								aria-label="Clear episode search input"
 							>
-								Reset
+								×
 							</button>
 						</div>
 					</form>

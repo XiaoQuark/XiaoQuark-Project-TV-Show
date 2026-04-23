@@ -4,19 +4,33 @@ function setup() {
 	elements.controlsForm = document.getElementById("controls");
 	elements.showSelect = document.getElementById("show-select");
 	elements.episodeSelect = document.getElementById("episode-select");
-	elements.searchInput = document.getElementById("search-input");
-	elements.clearButton = document.getElementById("clear-search");
+	elements.showSearchInput = document.getElementById("show-search-input");
+	elements.episodeSearchInput = document.getElementById(
+		"episode-search-input",
+	);
+	elements.clearEpisodeSearchButton = document.getElementById(
+		"clear-episode-search",
+	);
 	elements.episodeCount = document.getElementById("episode-count");
 	elements.grid = document.getElementById("episodes-grid");
 	elements.backToShowsButton = document.getElementById("back-to-shows");
 
-	elements.searchInput.value = "";
+	elements.showSearchInput.value = "";
+	elements.episodeSearchInput.value = "";
 
 	elements.showSelect.addEventListener("change", handleShowSelectChange);
 	elements.episodeSelect.addEventListener("change", handleSelectChange);
-	elements.searchInput.addEventListener("input", handleSearchInput);
+	elements.showSearchInput.addEventListener("input", handleShowSearchInput);
+	elements.episodeSearchInput.addEventListener(
+		"input",
+		handleEpisodeSearchInput,
+	);
+	elements.clearEpisodeSearchButton.addEventListener(
+		"click",
+		handleClearEpisodeSearch,
+	);
 	elements.controlsForm.addEventListener("submit", handleFormSubmit);
-	elements.clearButton.addEventListener("click", handleClearSearch);
+
 	elements.episodeTemplate = document.getElementById("episode-template");
 	elements.showTemplate = document.getElementById("show-template");
 	elements.backToShowsButton.addEventListener("click", handleBackToShows);
@@ -44,7 +58,8 @@ const state = {
 	allShows: [],
 	// episodesCache?
 	allEpisodes: [],
-	searchTerm: "",
+	showSearchTerm: "",
+	episodeSearchTerm: "",
 	// keeping this state for now because I might decide to change the dropdown behaviour back to filtering, not scrolling
 	selectedEpisodeId: "all",
 	selectedShowId: "",
@@ -59,8 +74,11 @@ const elements = {
 	controlsForm: null,
 	showSelect: null,
 	episodeSelect: null,
-	searchInput: null,
-	clearButton: null,
+
+	showSearchInput: null,
+	episodeSearchInput: null,
+	clearEpisodeSearchButton: null,
+
 	episodeCount: null,
 	grid: null,
 	episodeTemplate: null,
@@ -71,6 +89,8 @@ const elements = {
 const BASE_URL = "https://api.tvmaze.com";
 const SHOWS_URL = `${BASE_URL}/shows`;
 
+// fetching
+// fetch shows
 function fetchShows() {
 	return fetch(SHOWS_URL).then((response) => {
 		if (!response.ok) {
@@ -79,7 +99,7 @@ function fetchShows() {
 		return response.json();
 	});
 }
-
+// fetch episodes
 function fetchEpisodes(showId) {
 	if (state.episodesCache[showId]) {
 		return Promise.resolve(state.episodesCache[showId]);
@@ -92,20 +112,27 @@ function fetchEpisodes(showId) {
 		});
 	});
 }
+
 // event handlers
+// Show search
+function handleShowSearchInput(event) {
+	state.showSearchTerm = event.target.value.toLowerCase();
+	render();
+}
+// episode search
+function handleEpisodeSearchInput(event) {
+	state.episodeSearchTerm = event.target.value.toLowerCase();
+	render();
+}
+// clear search
+function handleClearEpisodeSearch() {
+	state.episodeSearchTerm = "";
+	elements.episodeSearchInput.value = "";
+	render();
+}
+
 function handleFormSubmit(event) {
 	event.preventDefault();
-}
-
-function handleClearSearch() {
-	state.searchTerm = "";
-	elements.searchInput.value = "";
-	render();
-}
-
-function handleSearchInput(event) {
-	state.searchTerm = event.target.value.toLowerCase();
-	render();
 }
 
 function handleShowSelectChange(event) {
@@ -115,8 +142,8 @@ function handleShowSelectChange(event) {
 	state.selectedShowId = showId;
 	state.currentView = "episodes";
 	state.selectedEpisodeId = "all";
-	state.searchTerm = "";
-	elements.searchInput.value = "";
+	state.episodeSearchTerm = "";
+	elements.episodeSearchInput.value = "";
 
 	episodeSelect.innerHTML = '<option value="all">Select Episode</option>';
 
@@ -150,10 +177,10 @@ function handleBackToShows() {
 	state.currentView = "shows";
 	state.selectedShowId = "";
 	state.selectedEpisodeId = "all";
-	state.searchTerm = "";
+	state.episodeSearchTerm = "";
+	elements.episodeSearchInput.value = "";
 	state.allEpisodes = [];
 
-	elements.searchInput.value = "";
 	elements.showSelect.value = "";
 	elements.episodeSelect.innerHTML =
 		'<option value="all">Select Episode</option>';
@@ -244,9 +271,11 @@ function render() {
 
 	const filteredEpisodes = state.allEpisodes.filter(
 		(episode) =>
-			episode.name.toLowerCase().includes(state.searchTerm) ||
+			episode.name.toLowerCase().includes(state.episodeSearchTerm) ||
 			(episode.summary &&
-				episode.summary.toLowerCase().includes(state.searchTerm)),
+				episode.summary
+					.toLowerCase()
+					.includes(state.episodeSearchTerm)),
 	);
 
 	episodeCount.textContent = `Displaying ${filteredEpisodes.length} / ${state.allEpisodes.length} episodes`;
@@ -256,7 +285,20 @@ function render() {
 // draw show section
 function makePageForShows(showList) {
 	const grid = elements.grid;
-	for (const show of showList) {
+
+	const filteredShows = showList.filter((show) => {
+		const search = state.showSearchTerm;
+		const genresText = show.genres.join(" ").toLowerCase();
+		const summaryText = (show.summary || "").toLowerCase();
+
+		return (
+			show.name.toLowerCase().includes(search) ||
+			genresText.includes(search) ||
+			summaryText.includes(search)
+		);
+	});
+
+	for (const show of filteredShows) {
 		const card = createShowCard(show);
 		grid.appendChild(card);
 	}
@@ -341,8 +383,8 @@ function createShowCard(show) {
 function handleShowCardClick(showId) {
 	state.selectedShowId = showId;
 	state.selectedEpisodeId = "all";
-	state.searchTerm = "";
-	elements.searchInput.value = "";
+	state.episodeSearchTerm = "";
+	elements.episodeSearchInput.value = "";
 
 	elements.episodeSelect.innerHTML =
 		'<option value="all">Select Episode</option>';
